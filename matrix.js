@@ -1,5 +1,7 @@
 'use strict'
 
+module.exports = createMatrixCameraController
+
 function MatrixCameraController() { 
 }
 
@@ -38,4 +40,5 @@ proto.getDistance = function() { return 0.0 }
 proto.getUp = proto.getEye = proto.setCenter = function(t, out) { out[0] = out[1] = out[2]; return out }
 
 function createMatrixCameraController() {
+  return new MatrixCameraController()
 }
