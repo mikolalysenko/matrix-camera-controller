@@ -1,12 +1,12 @@
 'use strict'
 
-var bsearch = require('binary-search-bounds')
-var m4interp = require('mat4-interpolate')
-var invert44 = require('gl-mat4/invert')
-var rotateX = require('gl-mat4/rotateX')
-var rotateY = require('gl-mat4/rotateY')
-var rotateZ = require('gl-mat4/rotateZ')
-var lookAt = require('gl-mat4/lookAt')
+var bsearch   = require('binary-search-bounds')
+var m4interp  = require('mat4-interpolate')
+var invert44  = require('gl-mat4/invert')
+var rotateX   = require('gl-mat4/rotateX')
+var rotateY   = require('gl-mat4/rotateY')
+var rotateZ   = require('gl-mat4/rotateZ')
+var lookAt    = require('gl-mat4/lookAt')
 var translate = require('gl-mat4/translate')
 var scale     = require('gl-mat4/scale')
 var normalize = require('gl-vec3/normalize')
@@ -24,6 +24,7 @@ function MatrixCameraController(initialMatrix) {
   this.computedInverse = initialMatrix.slice()
   this.computedEye    = [0,0,0]
   this.computedUp     = [0,0,0]
+  this._limits        = [-Infinity, Infinity]
 }
 
 var proto = MatrixCameraController.prototype
@@ -91,9 +92,7 @@ proto.getMatrix = function(t, out) {
 }
 
 proto.idle = function(t) {
-  var time = this._time
-  var t0 = time[time.length-1]
-  if(t <= t0) {
+  if(t < this.lastT()) {
     return
   }
   var mc = this._components
@@ -101,7 +100,7 @@ proto.idle = function(t) {
   for(var i=0; i<16; ++i) {
     mc.push(mc[ptr++])
   }
-  time.push(t)
+  this._time.push(t)
 }
 
 proto.flush = function(t) {
@@ -134,27 +133,24 @@ proto.rotate = function(t, yaw, pitch, roll) {
   this.setMatrix(t, invert44(this.computedMatrix, mat))
 }
 
-proto.zoom = function(t, dr) {
-  this.recalcMatrix(t)
-  var mat = this.computedMatrix
-  
-  //TODO
-}
+var tvec = [0,0,0]
 
 proto.pan = function(t, dx, dy, dz) {
+  tvec[0] = -(dx || 0.0)
+  tvec[1] = -(dy || 0.0)
+  tvec[2] = -(dz || 0.0)
   this.recalcMatrix(t)
-  var mat = this.computedMatrix
-  
-  //TODO
+  var mat = this.computedInverse
+  translate(mat, mat, tvec)
+  this.setMatrix(t, invert44(mat, mat))
 }
 
-var tvec = [0,0,0]
 proto.translate = function(t, dx, dy, dz) {
+  tvec[0] = dx || 0.0
+  tvec[1] = dy || 0.0
+  tvec[2] = dz || 0.0
   this.recalcMatrix(t)
   var mat = this.computedMatrix
-  tvec[0] = dx
-  tvec[1] = dy
-  tvec[2] = dz
   translate(mat, mat, tvec)
   this.setMatrix(t, mat)
 }
@@ -169,24 +165,57 @@ proto.setMatrix = function(t, mat) {
   }
 }
 
-proto.getEye = function(t, out) {
+proto.getCenter = proto.getEye = function(t, out) {
   this.recalcMatrix(t)
-  return this.computedEye
+  var eye = this.computedEye
+  if(out) {
+    out[0] = eye[0]
+    out[1] = eye[1]
+    out[2] = eye[2]
+    return out
+  }
+  return eye
 }
 
 proto.getUp = function(t, out) {
   this.recalcMatrix(t)
-  return this.computedUp
+  var up = this.computedUp
+  if(out) {
+    out[0] = up[0]
+    out[1] = up[1]
+    out[2] = up[2]
+    return out
+  }
+  return up
 }
 
-proto.getZoom = function(t) {
+proto.getDistance = function(t) {
   return 1.0
 }
 
+proto.setDistance = function(t, d) {}
+
+proto.setDistanceLimits = function(a,b) {
+  var lim = this._limits
+  lim[0] = a
+  lim[1] = b
+}
+
+proto.getDistanceLimits = function(out) {
+  var lim = this._limits
+  if(out) {
+    out[0] = lim[0]
+    out[1] = lim[1]
+    return out
+  }
+  return lim
+}
+
 function createMatrixCameraController(options) {
-  return new MatrixCameraController([
-    1,0,0,0,
-    0,1,0,0,
-    0,0,1,0,
-    0,0,0,1])
+  var matrix = options.matrix || 
+              [1,0,0,0,
+               0,1,0,0,
+               0,0,1,0,
+               0,0,0,1]
+  return new MatrixCameraController(matrix)
 }
