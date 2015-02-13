@@ -145,6 +145,7 @@ proto.pan = function(t, dx, dy, dz) {
   this.recalcMatrix(t)
   var mat = this.computedMatrix
   
+  //TODO
 }
 
 var tvec = [0,0,0]
