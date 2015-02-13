@@ -212,6 +212,7 @@ proto.getDistanceLimits = function(out) {
 }
 
 function createMatrixCameraController(options) {
+  options = options || {}
   var matrix = options.matrix || 
               [1,0,0,0,
                0,1,0,0,
