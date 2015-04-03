@@ -79,18 +79,12 @@ proto.recalcMatrix = function(t) {
   eye[0] = imat[12]/w
   eye[1] = imat[13]/w
   eye[2] = imat[14]/w
-}
 
-proto.getMatrix = function(t, out) {
-  this.recalcMatrix(t)
-  var mat = this.computedMatrix
-  if(out) {
-    for(var i=0; i<16; ++i) {
-      out[i] = mat[i]
-    }
-    return out
+  var center = this.computedCenter
+  var radius = Math.exp(this.computedRadius[0])
+  for(var i=0; i<3; ++i) {
+    center[i] = eye[i] - mat[2+4*i] * radius
   }
-  return mat
 }
 
 proto.idle = function(t) {
@@ -124,6 +118,12 @@ proto.lookAt = function(t, eye, center, up) {
   center = center || DEFAULT_CENTER
   up     = up || this.computedUp
   this.setMatrix(t, lookAt(this.computedMatrix, eye, center, up))
+  var d2 = 0.0
+  for(var i=0; i<3; ++i) {
+    d2 += Math.pow(center[i] - eye[i], 2)
+  }
+  d2 = Math.log(Math.sqrt(d2))
+  this.computedRadius[0] = d2
 }
 
 proto.rotate = function(t, yaw, pitch, roll) {

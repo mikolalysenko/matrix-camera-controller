@@ -37,11 +37,16 @@ tape('matrix camera', function(t) {
     var controller = createOrbit()
     controller.lookAt(10, eye, center, up)
 
-    var orbitMat = controller.getMatrix(10, [])
+    controller.recalcMatrix(10)
+
+    var orbitMat = controller.computedMatrix
     t.ok(matrixApproxEquals(mat, orbitMat), 'compare mat: ' + mat + '   :    ' + orbitMat)
 
     var oeye = controller.computedEye
     t.ok(arrayApproxEquals(eye, oeye), 'compare eye: '  + eye + ':' + oeye)
+
+    var ocenter = controller.computedCenter
+    t.ok(arrayApproxEquals(center, ocenter), 'compare center: ' + center + ':' + ocenter)
   }
 
   for(var i=0; i<100; ++i) {
@@ -54,7 +59,10 @@ tape('matrix camera', function(t) {
     var controller = createOrbit()
     controller.setMatrix(10, mat)
 
-    var orbitMat = controller.getMatrix(10, [])
+    controller.recalcMatrix(10)
+
+
+    var orbitMat = controller.computedMatrix
     t.ok(matrixApproxEquals(mat, orbitMat), 'compare mat: ' + mat + '   :    ' + orbitMat)
 
     var oeye = controller.computedEye
