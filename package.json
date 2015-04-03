@@ -1,6 +1,6 @@
 {
   "name": "matrix-camera-controller",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "View camera control by direct matrix manipulation",
   "main": "matrix.js",
   "scripts": {
