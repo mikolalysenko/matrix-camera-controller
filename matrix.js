@@ -74,9 +74,9 @@ proto.recalcMatrix = function(t) {
   invert44(imat, mat)
   var eye = this.computedEye
   var w = imat[15]
-  eye[0] = mat[12]/w
-  eye[1] = mat[13]/w
-  eye[2] = mat[14]/w
+  eye[0] = imat[12]/w
+  eye[1] = imat[13]/w
+  eye[2] = imat[14]/w
 }
 
 proto.getMatrix = function(t, out) {
@@ -163,34 +163,6 @@ proto.setMatrix = function(t, mat) {
   for(var i=0; i<16; ++i) {
     this._components.push(mat[i])
   }
-}
-
-proto.getCenter = proto.getEye = function(t, out) {
-  this.recalcMatrix(t)
-  var eye = this.computedEye
-  if(out) {
-    out[0] = eye[0]
-    out[1] = eye[1]
-    out[2] = eye[2]
-    return out
-  }
-  return eye
-}
-
-proto.getUp = function(t, out) {
-  this.recalcMatrix(t)
-  var up = this.computedUp
-  if(out) {
-    out[0] = up[0]
-    out[1] = up[1]
-    out[2] = up[2]
-    return out
-  }
-  return up
-}
-
-proto.getDistance = function(t) {
-  return 1.0
 }
 
 proto.setDistance = function(t, d) {}
