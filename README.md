@@ -2,6 +2,8 @@ matrix-camera-controller
 ========================
 Matrix camera controller interface
 
+[![build status](https://secure.travis-ci.org/mikolalysenko/matrix-camera-controller.png)](http://travis-ci.org/mikolalysenko/matrix-camera-controller)
+
 # Install
 
 ```
