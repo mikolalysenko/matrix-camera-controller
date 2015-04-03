@@ -24,6 +24,8 @@ function MatrixCameraController(initialMatrix) {
   this.computedInverse = initialMatrix.slice()
   this.computedEye    = [0,0,0]
   this.computedUp     = [0,0,0]
+  this.computedCenter = [0,0,0]
+  this.computedRadius = [0]
   this._limits        = [-Infinity, Infinity]
 }
 
@@ -165,7 +167,9 @@ proto.setMatrix = function(t, mat) {
   }
 }
 
-proto.setDistance = function(t, d) {}
+proto.setDistance = function(t, d) {
+  this.computedRadius[0] = d
+}
 
 proto.setDistanceLimits = function(a,b) {
   var lim = this._limits
