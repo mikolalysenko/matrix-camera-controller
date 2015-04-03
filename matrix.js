@@ -69,7 +69,7 @@ proto.recalcMatrix = function(t) {
   var up = this.computedUp
   up[0] = mat[1]
   up[1] = mat[5]
-  up[2] = mat[6]
+  up[2] = mat[9]
   normalize(up, up)
 
   var imat = this.computedInverse
