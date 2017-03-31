@@ -104,8 +104,8 @@ proto.flush = function(t) {
   if(idx < 0) {
     return
   }
-  this._time.slice(0, idx)
-  this._components.slice(0, 16*idx)
+  this._time.splice(0, idx)
+  this._components.splice(0, 16*idx)
 }
 
 proto.lastT = function() {
