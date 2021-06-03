@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/mikolalysenko/matrix-camera-controller",
   "dependencies": {
-    "binary-search-bounds": "^1.0.0",
+    "binary-search-bounds": "^2.0.0",
     "gl-mat4": "^1.1.2",
     "gl-vec3": "^1.0.3",
     "mat4-interpolate": "^1.0.3"
